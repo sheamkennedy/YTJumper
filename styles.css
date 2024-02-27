@@ -96,3 +96,24 @@
     cursor: default; /* Set cursor style to default */
     pointer-events: none; /* Disable pointer events */
 }
+
+/* Existing CSS content of your project */
+
+.drum-pad {
+  width: 100px;
+  height: 100px;
+  margin: 10px;
+  background-color: lightgrey;
+  display: inline-block;
+  text-align: center;
+  line-height: 100px;
+  cursor: pointer;
+  position: relative;
+}
+.file-name {
+  font-size: 10px;
+  position: absolute;
+  bottom: -15px;
+  width: 100%;
+}
+
