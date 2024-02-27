@@ -1,0 +1,98 @@
+.flex-container {
+    display: flex;
+    justify-content: space-between; /* Distribute items evenly */
+ }
+
+ .flex-item {
+    flex: 0 0 30%; /* Set flex basis to 30% width */
+ }
+
+
+ .flex-item2 {
+  flex: 0 0 50%; /* Set flex basis to 50% width for each item to create a two-column layout */
+ }
+
+.customID {
+  padding: 10px;
+} 
+
+/* Style the table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 2px solid #ddd;
+      font-family: Arial, sans-serif;
+    }
+    
+    /* Style the header row */
+    th {
+      background-color: #f2f2f2;
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    
+    /* Style the table data */
+    td {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+    
+    /* Style alternate rows */
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+  
+  /* CSS for the custom buttons */
+  .controls {
+    margin-top: 10px;
+  }
+  
+  /* CSS for the active state of keys */
+  .key-active {
+    background-color: yellow; /* Change to desired color */
+  }
+  
+  .tableHead {
+    font-size: 24px;
+    text-align: center; /* Center-align text */
+    
+  }
+  .blkTable {
+    background-color: black; /* Change background color */
+    color: white;
+  }
+
+/* FILTER */
+.container {
+  max-width: 600px; /* Adjust as needed */
+  max-height: 230px; /* Set the maximum height */
+  min-height: 230px; /* Set the maximum height */
+  overflow-y: auto; /* Add vertical scroll if content overflows */
+  margin: 0 auto; /* Center the container */
+  padding: 20px;
+  border: 1px solid #ccc;
+}
+
+.filter {
+  margin-bottom: 20px;
+}
+
+#preset-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.preset {
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+#videoSelector {
+    cursor: default; /* Set cursor style to default */
+    pointer-events: none; /* Disable pointer events */
+}

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Custom YouTube Player</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<div class="flex-container">
+    <!-- First column -->
+    <div class="flex-item">
+
+    </div>
+  
+    <!-- Second column -->
+    <div class="flex-item">
+      <!-- YouTube player iframe -->
+      <div id="youtube-player"></div>
+    </div>
+  
+
+    <!-- Third column -->
+    <div class="flex-item">
+        <div>
+            <select id="videoSelector" style="display: none">    
+                <option value="custom" selected>Enter Custom ID</option> <!-- Set this option as selected -->
+
+                <!-- Add more default options as needed -->
+            </select>
+            <div class="flex-container">
+                <div class="flex-item2">
+                    <p>Enter Custom ID:</p>
+                </div>
+                <div class="flex-item2">
+                    <input type="text" id="custom-video-id" class="customID" oninput="loadVideo()"> <!-- Trigger loadVideo() when input changes -->
+                </div>
+            </div>
+            <div class="container">
+                <div class="filter">
+                    <label for="filter">Filter by Category:</label>
+                    <select id="filter">
+                        <option value="all">All</option>
+                        <option value="favorites">Favorites</option>
+                        <option value="category1">Category 1</option>
+                        <option value="category2">Category 2</option>
+                        <option value="category3">Category 3</option> <!-- Corrected value -->
+                    </select>
+                </div>
+    
+                <ul id="preset-list">
+                    <li class="preset category1" data-preset="Tetris Attack">
+                        <button class="favorite-btn" data-preset="Tetris Attack">❤</button> Tetris Attack
+                    </li>
+                    <li class="preset category2" data-preset="Tanuki">
+                        <button class="favorite-btn" data-preset="Tanuki">❤</button> Tanuki
+                    </li>
+                    <li class="preset category3" data-preset="Cloud Dancers | クラウドダンサー">
+                        <button class="favorite-btn" data-preset="Cloud Dancers | クラウドダンサー">❤</button> Cloud Dancers | クラウドダンサー
+                    </li>
+                    <li class="preset category3" data-preset="Murated">
+                        <button class="favorite-btn" data-preset="Murated">❤</button> Murated
+                    </li>
+                    <!-- Include more presets as needed -->
+                </ul>
+            </div>
+        </div>
+  </div>
+</div>
+
+<!-- Button to get current playhead timestamp -->
+<!-- <button id="getTimestampButton">Get Current Timestamp</button> -->
+
+<!-- Display area for the current timestamp -->
+<!-- <p id="currentTimestamp"></p> -->
+
+<!-- Display area for the current timestamp -->
+<p id="realtimeTimestamp"></p>
+
+<!-- Timestamp jump buttons -->
+<table>
+    <thead>
+      <tr>
+          <th class="tableHead" colspan="5">Jumper</th>
+          <th class="tableHead blkTable" colspan="3">Layered Audio</th>
+      </tr>
+  
+    </thead>
+    <thead>
+      <tr>
+        <th>Track</th>
+        <th class="hintable" title="⤷ Press keys on keyboard to trigger track">
+          Control
+          <i class="fas fa-info-circle hint-icon"></i>
+        </th>
+  <!--       <th title="Timestamp indicates the point in time for each event">Timestamp</th> -->
+        <th class="hintable" title="⤷ Timestamp to jump to on keypress (HH:MM:SS.S)">
+          Jump Point
+          <i class="fas fa-info-circle hint-icon"></i>
+        </th>
+  <!--       <th title="Rate refers to the speed at which the player operates">Rate</th> -->
+        <th class="hintable" title="⤷ Rate of playback multiplier">
+          Rate
+          <i class="fas fa-info-circle hint-icon"></i>
+        </th>
+  <!--       <th title="Checkbox toggles the functionality associated with the corresponding key">Checkbox</th> -->
+        <th class="hintable" title="⤷ Toggles on/off video jump control on keypress">
+          Jump Toggle
+          <i class="fas fa-info-circle hint-icon"></i>
+        </th>
+  <!--       <th title="Audio allows you to upload audio files for each key">Audio</th> -->
+        <th class="hintable blkTable" title="⤷ Upload a sample to trigger on keypress">
+          Upload Sample
+          <i class="fas fa-info-circle hint-icon"></i>
+        </th>
+  <!--       <th title="Play initiates playback of the audio associated with the key">Play</th> -->
+        <th class="hintable blkTable" title="⤷ Playback sample">
+          Play Sample
+          <i class="fas fa-info-circle hint-icon"></i>
+        </th>
+  <!--       <th title="Volume adjusts the audio volume for the corresponding key">Volume</th> -->
+        <th class="hintable blkTable" title="⤷ Volume of layered sample">
+          Volume
+          <i class="fas fa-info-circle hint-icon"></i>
+        </th>
+      </tr>
+    </thead>
+    
+    <tbody>
+      <!-- Chunk 1 -->
+      <tr>
+        <td>1</td>
+        <td>
+            <div class="controls">
+                (<a href="#" onclick="jumpToTime(document.getElementById('timestamp1').value, document.getElementById('speed1').value); return false;"><span id="keyQ">Q</span></a>)
+            </div>
+        </td>
+        <td>
+            <label for="time1">Timestamp: </label>
+            <input type="text" id="timestamp1" pattern="[0-9]*:[0-9]*:[0-9]*.[0-9]*" placeholder="00:00:00.0" value="00:00:05.0" onchange="updateButton(1)">
+            <!-- Add Get Current Timestamp button -->
+            <button onclick="getCurrentTimestamp('timestamp1')">Get</button>
+        </td>
+        <td>
+            × <input type="number" id="speed1" step="0.25" min="0.25" max="2.0" value="1.0" onchange="updateButton(1)">
+        </td>
+        <td>
+            <!-- Add checkbox for key Q -->
+            <input type="checkbox" id="checkboxQ" checked> ᴏɴ | ᴏꜰꜰ
+        </td>
+        <td>
+            <input type="file" id="audioQ" accept="audio/*" onchange="loadAudio('Q', this.files[0])">
+        </td>
+        <td>
+            <button onclick="playAudio('Q')">Play</button>
+        </td>
+        <td>
+            Volume: <input type="range" id="volumeQ" min="0" max="1" step="0.1" value="1" onchange="updateVolume('Q', this.value)">
+        </td>
+    </tr>
+      <!-- Chunk 2 -->
+<tr>
+    <td>2</td>
+    <td>
+        <div class="controls">
+            (<a href="#" onclick="jumpToTime(document.getElementById('timestamp2').value, document.getElementById('speed2').value); return false;"><span id="keyW">W</span></a>)
+        </div>
+    </td>
+    <td>
+        <label for="time2">Timestamp: </label>
+        <input type="text" id="timestamp2" pattern="[0-9]*:[0-9]*:[0-9]*.[0-9]*" placeholder="00:00:00.0" value="00:00:10.0" onchange="updateButton(2)">
+        <!-- Add Get Current Timestamp button -->
+        <button onclick="getCurrentTimestamp('timestamp2')">Get</button>
+    </td>
+    <td>
+        × <input type="number" id="speed2" step="0.25" min="0.25" max="2.0" value="1.0" onchange="updateButton(2)">
+    </td>
+    <td>
+        <!-- Add checkbox for key W -->
+        <input type="checkbox" id="checkboxW" checked> ᴏɴ | ᴏꜰꜰ
+    </td>
+    <td>
+        <input type="file" id="audioW" accept="audio/*" onchange="loadAudio('W', this.files[0])">
+    </td>
+    <td>
+        <button onclick="playAudio('W')">Play</button>
+    </td>
+    <td>
+        Volume: <input type="range" id="volumeW" min="0" max="1" step="0.1" value="1" onchange="updateVolume('W', this.value)">
+    </td>
+</tr>
+
+<!-- Chunk 3 -->
+<tr>
+  <td>3</td>
+  <td>
+      <div class="controls">
+          (<a href="#" onclick="jumpToTime(document.getElementById('timestamp3').value, document.getElementById('speed3').value); return false;"><span id="keyE">E</span></a>)
+      </div>
+  </td>
+  <td>
+      <label for="time3">Timestamp: </label>
+      <input type="text" id="timestamp3" pattern="[0-9]*:[0-9]*:[0-9]*.[0-9]*" placeholder="00:00:00.0" value="00:00:15.0" onchange="updateButton(3)">
+      <!-- Add Get Current Timestamp button -->
+      <button onclick="getCurrentTimestamp('timestamp3')">Get</button>
+  </td>
+  <td>
+      × <input type="number" id="speed3" step="0.25" min="0.25" max="2.0" value="1.0" onchange="updateButton(3)">
+  </td>
+  <td>
+      <!-- Add checkbox for key E -->
+      <input type="checkbox" id="checkboxE" checked> ᴏɴ | ᴏꜰꜰ
+  </td>
+  <td>
+      <input type="file" id="audioE" accept="audio/*" onchange="loadAudio('E', this.files[0])">
+  </td>
+  <td>
+      <button onclick="playAudio('E')">Play</button>
+  </td>
+  <td>
+      Volume: <input type="range" id="volumeE" min="0" max="1" step="0.1" value="1" onchange="updateVolume('E', this.value)">
+  </td>
+</tr>
+
+<!-- Chunk 4 -->
+<tr>
+  <td>4</td>
+  <td>
+      <div class="controls">
+          (<a href="#" onclick="jumpToTime(document.getElementById('timestamp4').value, document.getElementById('speed4').value); return false;"><span id="keyR">R</span></a>)
+      </div>
+  </td>
+  <td>
+      <label for="time4">Timestamp: </label>
+      <input type="text" id="timestamp4" pattern="[0-9]*:[0-9]*:[0-9]*.[0-9]*" placeholder="00:00:00.0" value="00:00:20.0" onchange="updateButton(4)">
+      <!-- Add Get Current Timestamp button -->
+      <button onclick="getCurrentTimestamp('timestamp4')">Get</button>
+  </td>
+  <td>
+      × <input type="number" id="speed4" step="0.25" min="0.25" max="2.0" value="1.0" onchange="updateButton(4)">
+  </td>
+  <td>
+      <!-- Add checkbox for key R -->
+      <input type="checkbox" id="checkboxR" checked> ᴏɴ | ᴏꜰꜰ
+  </td>
+  <td>
+      <input type="file" id="audioR" accept="audio/*" onchange="loadAudio('R', this.files[0])">
+  </td>
+  <td>
+      <button onclick="playAudio('R')">Play</button>
+  </td>
+  <td>
+      Volume: <input type="range" id="volumeR" min="0" max="1" step="0.1" value="1" onchange="updateVolume('R', this.value)">
+  </td>
+</tr>
+
+<!-- Chunk 5 -->
+<tr>
+  <td>5</td>
+  <td>
+      <div class="controls">
+          (<a href="#" onclick="jumpToTime(document.getElementById('timestamp5').value, document.getElementById('speed5').value); return false;"><span id="keyT">T</span></a>)
+      </div>
+  </td>
+  <td>
+      <label for="time5">Timestamp: </label>
+      <input type="text" id="timestamp5" pattern="[0-9]*:[0-9]*:[0-9]*.[0-9]*" placeholder="00:00:00.0" value="00:00:25.0" onchange="updateButton(5)">
+      <!-- Add Get Current Timestamp button -->
+      <button onclick="getCurrentTimestamp('timestamp5')">Get</button>
+  </td>
+  <td>
+      × <input type="number" id="speed5" step="0.25" min="0.25" max="2.0" value="1.0" onchange="updateButton(5)">
+  </td>
+  <td>
+      <!-- Add checkbox for key T -->
+      <input type="checkbox" id="checkboxT" checked> ᴏɴ | ᴏꜰꜰ
+  </td>
+  <td>
+      <input type="file" id="audioT" accept="audio/*" onchange="loadAudio('T', this.files[0])">
+  </td>
+  <td>
+      <button onclick="playAudio('T')">Play</button>
+  </td>
+  <td>
+      Volume: <input type="range" id="volumeT" min="0" max="1" step="0.1" value="1" onchange="updateVolume('T', this.value)">
+  </td>
+</tr>
+      </tbody>
+    </table>
+
+<!-- Load YouTube IFrame Player API -->
+<script src="https://www.youtube.com/iframe_api"></script>
+
+
+
+<script src="script.js"></script>
+</body>
+</html>
