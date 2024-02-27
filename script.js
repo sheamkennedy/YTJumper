@@ -401,3 +401,55 @@ function onPlayerError(event) {
   // Handle errors, if any
   console.error('Error loading YouTube player:', event.data);
 }
+
+// Existing JavaScript content of your project
+
+document.addEventListener('keydown', function(event) {
+  const key = event.keyCode.toString();
+  const audio = document.querySelector(`audio[data-key="${key}"]`);
+  const keyElement = document.querySelector(`.drum-pad[data-key="${key}"]`);
+  
+  if (!audio) return;
+  
+  keyElement.classList.add('playing');
+  audio.currentTime = 0;
+  audio.play();
+});
+
+const drumPads = document.querySelectorAll('.drum-pad');
+drumPads.forEach(pad => pad.addEventListener('transitionend', function(event) {
+  if (event.propertyName !== 'transform') return;
+  this.classList.remove('playing');
+}));
+
+document.getElementById('load-preset-1').addEventListener('click', function() {
+  const audioFiles = [
+    { key: '81', src: 'sounds/drums/167765.wav' },
+    { key: '87', src: 'sounds/drums/208571.wav' },
+    { key: '69', src: 'sounds/drums/270276.wav' }
+  ];
+  loadPreset(audioFiles);
+});
+
+document.getElementById('load-preset-2').addEventListener('click', function() {
+  const audioFiles = [
+    { key: '81', src: 'sounds/drums/167765.wav' },
+    { key: '87', src: 'sounds/drums/167765.wav' },
+    { key: '69', src: 'sounds/drums/167765.wav' }
+  ];
+  loadPreset(audioFiles);
+});
+
+function loadPreset(audioFiles) {
+  audioFiles.forEach(file => {
+    const audio = document.querySelector(`audio[data-key="${file.key}"]`);
+    if (audio) {
+      audio.src = file.src;
+      const fileNameElement = document.querySelector(`.drum-pad[data-key="${file.key}"] .file-name`);
+      if (fileNameElement) {
+        fileNameElement.textContent = file.src.split('/').pop(); // Extract filename from path
+      }
+    }
+  });
+}
+
