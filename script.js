@@ -7,8 +7,30 @@ function onYouTubeIframeAPIReady() {
     loadVideo(document.getElementById('videoSelector').value);
 }
 
+document.addEventListener("DOMContentLoaded", function() {
+  // Check if the YouTube IFrame Player API is ready
+  if (typeof YT !== 'undefined' && typeof YT.Player !== 'undefined') {
+      // API is ready, proceed to check for preset query parameter
+      checkForPreset();
+  } else {
+      // Wait for the API to be ready
+      window.onYouTubeIframeAPIReady = checkForPreset;
+  }
+
+  // Function to check for preset query parameter and load preset settings
+  function checkForPreset() {
+      // Check if the URL contains a preset query parameter
+      const urlParams = new URLSearchParams(window.location.search);
+      const presetName = urlParams.get('preset');
+      if (presetName) {
+          // If a preset query parameter is found, load the preset settings
+          loadPresetVideo(presetName);
+      }
+  }
+});
+
 // LOAD VIDEO
-function loadVideo(videoId) {
+function loadVideo(videoId, rates, jumpToggle) {
   // Check if the "Enter Custom ID" option is selected and there's a value in the custom video ID input field
   if (document.getElementById('videoSelector').value === 'custom') {
       var customVideoId = document.getElementById('custom-video-id').value;
@@ -44,100 +66,140 @@ function loadVideo(videoId) {
           }
       });
   }
+
+  // Set playback rates and jump toggle if provided
+  if (rates && jumpToggle !== undefined) {
+    // Set playback rates
+    // This part might need to be adjusted based on your specific implementation
+    // For example, you might want to set playback rates for different keys separately
+    // This is just a demonstration of how you can set playback rates for all keys
+    for (const key in rates) {
+      // Here you would set the playback rate for the corresponding key
+      // For demonstration purposes, I'm just logging the key and rate
+      console.log(key + ': ' + rates[key]);
+    }
+
+    // Set jump toggle
+    // This part also might need to be adjusted based on your specific implementation
+    // For example, you might want to handle jump toggle for each key separately
+    // This is just a demonstration of how you can set jump toggle
+    console.log('Jump Toggle: ' + jumpToggle);
+  }
 }
 
+
+// LOAD PRESET VIDEO
 // LOAD PRESET VIDEO
 function loadPresetVideo(presetName) {
-
   // Clear the custom video ID field
   document.getElementById('custom-video-id').value = "";
 
   // Map preset names to corresponding video IDs, timestamps, rates, jump toggles, and volumes
   var presets = {
-      "Tetris Attack": { 
-        audioFile: "sounds/drums/167765.wav", // Add audio file for Tetris Attack
-        videoId: "oxMx-VYlXss", 
-        timestampQ: "00:00:01.0", 
-        timestampW: "00:00:10.0", 
-        timestampE: "00:00:11.0", 
-        timestampR: "00:00:20.0", 
-        timestampT: "00:00:25.0", 
-        rates: {Q: "1.0", W: "1.0", E: "1.0", R: "1.0", T: "1.0"},  
-        jumpToggle: true, 
-        volume: 1.0
-        
+      "Tetris Attack": {
+          videoId: "oxMx-VYlXss",
+          timestampQ: "00:00:01.0",
+          timestampW: "00:00:10.0",
+          timestampE: "00:00:11.0",
+          timestampR: "00:00:20.0",
+          timestampT: "00:00:25.0",
+          rates: { Q: "1.0", W: "2.0", E: "2.0", R: "1.0", T: "1.0" },
+          jumpToggle: true,
+          // volume: 1.0
       },
-      "Tanuki": { 
-        videoId: "7nHRP-NhD74", 
-        timestampQ: "00:00:05.0", 
-        timestampW: "00:00:10.0", 
-        timestampE: "00:00:15.0", 
-        timestampR: "00:00:20.0", 
-        timestampT: "00:00:25.0", 
-        rates: {Q: "1.0", W: "1.0", E: "1.0", R: "1.0", T: "1.0"},   
-        jumpToggle: true, 
-        volume: 1.0 
+      "Tanuki": {
+          videoId: "7nHRP-NhD74",
+          timestampQ: "00:00:02.0",
+          timestampW: "00:00:10.0",
+          timestampE: "00:00:15.0",
+          timestampR: "00:00:20.0",
+          timestampT: "00:00:25.0",
+          rates: { Q: "1.0", W: "2.0", E: "1.0", R: "1.0", T: "1.0" },
+          jumpToggle: false,
+          // volume: 1.0
       },
-      "Cloud Dancers | クラウドダンサー": { 
-        videoId: "9Ynp9IZxGBA", 
-        timestampQ: "00:00:05.0", 
-        timestampW: "00:00:10.0", 
-        timestampE: "00:00:15.0", 
-        timestampR: "00:00:20.0", 
-        timestampT: "00:00:25.0", 
-        rates: {Q: "1.0", W: "1.0", E: "1.0", R: "1.0", T: "1.0"},  
-        jumpToggle: true, 
-        volume: 1.0 
+      "Cloud Dancers | クラウドダンサー": {
+          videoId: "9Ynp9IZxGBA",
+          timestampQ: "00:00:03.0",
+          timestampW: "00:00:10.0",
+          timestampE: "00:00:15.0",
+          timestampR: "00:00:20.0",
+          timestampT: "00:00:25.0",
+          rates: { Q: "0.5", W: "2.0", E: "1.0", R: "1.0", T: "1.0" },
+          jumpToggle: true,
+          // volume: 1.0
       },
-      "Murated": { 
-        videoId: "D377RXqE_ag", 
-        timestampQ: "00:00:05.0", 
-        timestampW: "00:00:10.0", 
-        timestampE: "00:00:15.0", 
-        timestampR: "00:00:20.0", 
-        timestampT: "00:00:25.0", 
-        rates: {Q: "1.0", W: "1.0", E: "1.0", R: "1.0", T: "1.0"},  
-        jumpToggle: true, 
-        volume: 1.0 
+      "Murated": {
+          videoId: "D377RXqE_ag",
+          timestampQ: "00:00:04.0",
+          timestampW: "00:00:10.0",
+          timestampE: "00:00:15.0",
+          timestampR: "00:00:20.0",
+          timestampT: "00:00:25.0",
+          rates: { Q: "1.0", W: "2.0", E: "1.0", R: "2.0", T: "1.0" },
+          jumpToggle: true,
+          // volume: 1.0
       },
       // Add more presets as needed
   };
-  
+
   var preset = presets[presetName];
   if (preset) {
-      loadVideo(preset.videoId, preset.rates);
-      document.getElementById('timestamp1').value = preset.timestampQ;
-      document.getElementById('timestamp2').value = preset.timestampW;
-      document.getElementById('timestamp3').value = preset.timestampE;
-      document.getElementById('timestamp4').value = preset.timestampR;
-      document.getElementById('timestamp5').value = preset.timestampT;
-      document.getElementById('speed1').value = preset.rates.Q;
-      document.getElementById('speed2').value = preset.rates.W;
-      document.getElementById('speed3').value = preset.rates.E;
-      document.getElementById('speed4').value = preset.rates.R;
-      document.getElementById('speed5').value = preset.rates.T;
-      document.getElementById('checkboxQ').checked = preset.jumpToggle;
-      document.getElementById('checkboxW').checked = preset.jumpToggle;
-      document.getElementById('checkboxE').checked = preset.jumpToggle;
-      document.getElementById('checkboxR').checked = preset.jumpToggle;
-      document.getElementById('checkboxT').checked = preset.jumpToggle;
-      document.getElementById('volumeQ').value = preset.volume;
-      document.getElementById('volumeW').value = preset.volume;
-      document.getElementById('volumeE').value = preset.volume;
-      document.getElementById('volumeR').value = preset.volume;
-      document.getElementById('volumeT').value = preset.volume;
+    // Remove symbols that would display as %something and encode the preset name for the query parameter
+    // var cleanedPresetName = presetName.replace(/[^a-zA-Z0-9]/g, ''); // Removes all non-alphanumeric characters
+    // var queryParams = `preset=${encodeURIComponent(cleanedPresetName)}`;
+    var queryParams = `preset=${encodeURIComponent(presetName)}`;
 
-      updateButton(1); // Update button text for Q
-      updateButton(2); // Update button text for W
-      updateButton(3); // Update button text for E
-      updateButton(4); // Update button text for R
-      updateButton(5); // Update button text for T
+    // Update the URL with the query parameter
+    window.history.pushState({}, '', '?' + queryParams);
 
-  
+    // Load preset based on presetName
+    loadVideo(preset.videoId, preset.rates, preset.jumpToggle); // Pass rates and jump toggle to loadVideo function
+    document.getElementById('timestamp1').value = preset.timestampQ;
+    document.getElementById('timestamp2').value = preset.timestampW;
+    document.getElementById('timestamp3').value = preset.timestampE;
+    document.getElementById('timestamp4').value = preset.timestampR;
+    document.getElementById('timestamp5').value = preset.timestampT;
+    // Set values for speed inputs
+    document.getElementById('speed1').value = preset.rates['Q'];
+    document.getElementById('speed2').value = preset.rates['W'];
+    document.getElementById('speed3').value = preset.rates['E'];
+    document.getElementById('speed4').value = preset.rates['R'];
+    document.getElementById('speed5').value = preset.rates['T'];
+    document.getElementById('checkboxQ').checked = preset.jumpToggle;
+    document.getElementById('checkboxW').checked = preset.jumpToggle;
+    document.getElementById('checkboxE').checked = preset.jumpToggle;
+    document.getElementById('checkboxR').checked = preset.jumpToggle;
+    document.getElementById('checkboxT').checked = preset.jumpToggle;
+    // document.getElementById('volumeQ').value = preset.volume;
+    // document.getElementById('volumeW').value = preset.volume;
+    // document.getElementById('volumeE').value = preset.volume;
+    // document.getElementById('volumeR').value = preset.volume;
+    // document.getElementById('volumeT').value = preset.volume;
+
+    updateButton(1); // Update button text for Q
+    updateButton(2); // Update button text for W
+    updateButton(3); // Update button text for E
+    updateButton(4); // Update button text for R
+    updateButton(5); // Update button text for T
+
   } else {
-      console.error("No settings found for preset:", presetName);
+    console.error("No settings found for preset:", presetName);
   }
 }
+
+
+// Function to parse URL parameters and load preset if specified
+window.onload = function() {
+  // Get the preset name from the URL query parameter
+  var urlParams = new URLSearchParams(window.location.search);
+  var presetName = urlParams.get('preset');
+
+  if (presetName) {
+      // Load preset settings if preset name is found in the URL
+      loadPresetVideo(presetName);
+  }
+};
 
 
 function formatTime(time) {
@@ -191,7 +253,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Function to update favorite button text based on favorite status
     function updateFavoriteButtonText(button, presetName) {
         const isFavorite = favorites.includes(presetName.toLowerCase());
-        button.textContent = isFavorite ? '♡' : '❤';
+        button.textContent = isFavorite ? '❤' : '♡';
     }
   
     // Function to update presets display based on selected category
@@ -265,15 +327,30 @@ function jumpToTime(timestamp, speed) {
     player.contentWindow.postMessage('{"event":"command","func":"setPlaybackRate","args":[' + speed + ']}', '*');
   }
   
-  // Function to update the timestamp button text based on user input
-  function updateButton(buttonNumber) {
-    var timestamp = document.getElementById('timestamp' + buttonNumber).value;
-    var speed = document.getElementById('speed' + buttonNumber).value;
-    document.getElementById('button' + buttonNumber).innerText = "Jump to " + timestamp + " at " + speed + "x (Q)";
-  }
+// Function to update the timestamp button text based on user input
+function updateButton(buttonNumber) {
+  var speedInputId = 'speed' + buttonNumber;
+  var speedValue = document.getElementById(speedInputId).value;
+  var timestampValue = document.getElementById('timestamp' + buttonNumber).value;
+  var button = document.getElementById('button' + buttonNumber);
+  
+  var key = getKeyFromButtonNumber(buttonNumber); // Get the key associated with the button number
+  
+  // Update the button text
+  button.innerText = "Jump to " + timestampValue + " at " + speedValue + "x (" + key.toUpperCase() + ")";
+}
+
+// Function to get the key associated with the button number
+function getKeyFromButtonNumber(buttonNumber) {
+  // Map button numbers to keys
+  var keyMap = { 1: 'Q', 2: 'W', 3: 'E', 4: 'R', 5: 'T' };
+  return keyMap[buttonNumber];
+}
+
   
   // Function to load and play uploaded audio
 function loadAudio(key, file) {
+  triggerLoadPresetOff(key);
   var audio = new Audio();
   audio.src = URL.createObjectURL(file);
   audioElements[key].audio = audio;
@@ -365,7 +442,7 @@ function playAudio(key) {
   });
 
 
-  // Function to get the current timestamp and update the corresponding input field
+// Function to get the current timestamp and update the corresponding input field
 function getCurrentTimestamp(inputId) {
     // Get the current playhead timestamp
     var currentTime = player.getCurrentTime();
@@ -402,8 +479,7 @@ function onPlayerError(event) {
   console.error('Error loading YouTube player:', event.data);
 }
 
-// Existing JavaScript content of your project
-
+// Handle Audio Presets
 document.addEventListener('keydown', function(event) {
   const key = event.keyCode.toString();
   const audio = document.querySelector(`audio[data-key="${key}"]`);
@@ -422,10 +498,30 @@ drumPads.forEach(pad => pad.addEventListener('transitionend', function(event) {
   this.classList.remove('playing');
 }));
 
+
+    document.getElementById('load-preset-off-Q').addEventListener('click', function() {
+      const audioFiles = [
+        { key: '81', src: 'sounds/drums/None' }
+      ];
+      loadPreset(audioFiles);
+    });
+    document.getElementById('load-preset-off-W').addEventListener('click', function() {
+      const audioFiles = [
+        { key: '87', src: 'sounds/drums/None' }
+      ];
+      loadPreset(audioFiles);
+    });
+    document.getElementById('load-preset-off-E').addEventListener('click', function() {
+      const audioFiles = [
+        { key: '69', src: 'sounds/drums/None' }
+      ];
+      loadPreset(audioFiles);
+    });
+
 document.getElementById('load-preset-1').addEventListener('click', function() {
   const audioFiles = [
-    { key: '81', src: 'sounds/drums/167765.wav' },
-    { key: '87', src: 'sounds/drums/208571.wav' },
+    { key: '81', src: 'sounds/drums/270276.wav' },
+    { key: '87', src: 'sounds/drums/270276.wav' },
     { key: '69', src: 'sounds/drums/270276.wav' }
   ];
   loadPreset(audioFiles);
@@ -447,9 +543,105 @@ function loadPreset(audioFiles) {
       audio.src = file.src;
       const fileNameElement = document.querySelector(`.drum-pad[data-key="${file.key}"] .file-name`);
       if (fileNameElement) {
-        fileNameElement.textContent = file.src.split('/').pop(); // Extract filename from path
+        const filename = file.src.split('/').pop(); // Extract filename from path
+        fileNameElement.textContent = "Preset: " + filename; // Prepend "Preset: " to filename
       }
+      
+      // Set volume for the loaded audio to 1.0
+      audio.volume = 1.0;
+      
+      
+      
+      // If you want to play the audio immediately after loading the preset, uncomment the following line
+      // audio.play();
     }
   });
 }
 
+
+
+
+// Function to trigger load-preset-off button click event with key appended
+function triggerLoadPresetOff(key) {
+  var buttonId = 'load-preset-off-' + key;
+  var button = document.getElementById(buttonId);
+  if (button) {
+    button.click();
+  }
+}
+
+// Function to clear audio for a given key
+function clearAudio(key) {
+  if (audioElements[key].audio) {
+      audioElements[key].audio.pause(); // Pause the audio
+      audioElements[key].audio.currentTime = 0; // Reset audio to start
+      audioElements[key].audio.src = ""; // Clear the audio source
+      audioElements[key].audio = null; // Clear the audio element
+      // Reset the file input
+      var fileInput = document.getElementById('audio' + key);
+      fileInput.value = ''; // Clear the selected file
+      var fileNameSpan = fileInput.nextElementSibling.nextElementSibling; // Get the span element for file name display
+      fileNameSpan.innerText = ''; // Clear the file name display
+  }
+  // Trigger load-preset-off button click event with key appended
+  triggerLoadPresetOff(key);
+}
+
+// Function to set volume for an audio element
+function setVolume(key, volume) {
+  const audioElement = document.querySelector(`audio[data-key="${key.charCodeAt(0)}"]`);
+  if (audioElement) {
+    audioElement.volume = volume;
+  }
+}
+
+// Function to play audio for key Q with volume control
+// function playQ() {
+//   const audioQ = document.querySelector('audio[data-key="81"]');
+//   const volume = document.getElementById('volumeSliderQ').value;
+//   if (audioQ) {
+//       audioQ.currentTime = 0; // Reset audio to start
+//       setVolume(audioQ, volume); // Set the volume
+//       audioQ.play(); // Play the audio
+//   }
+// }
+
+
+// Function to play audio for key W with volume control
+// function playW() {
+//   const audioW = document.querySelector('audio[data-key="87"]');
+//   const volume = document.getElementById('volumeSliderW').value;
+//   if (audioW) {
+//       audioW.currentTime = 0; // Reset audio to start
+//       audioW.volume = volume; // Set the volume
+//       audioW.play(); // Play the audio
+//   }
+// }
+
+
+// Function to play audio for key E with volume control
+// function playE() {
+//   const audioE = document.querySelector('audio[data-key="69"]');
+//   const volume = document.getElementById('volumeSliderE').value;
+//   if (audioE) {
+//       audioE.currentTime = 0; // Reset audio to start
+//       audioE.volume = volume; // Set the volume
+//       audioE.play(); // Play the audio
+//   }
+// }
+
+// Event listeners for play buttons with volume control
+document.getElementById('playQButton').addEventListener('click', playQ);
+document.getElementById('playWButton').addEventListener('click', playW);
+document.getElementById('playEButton').addEventListener('click', playE);
+
+// Do clear of audio for all keys before loading new preset.
+function clearAudioForAllKeys() {
+  // Array of keys
+  var keys = ['Q', 'W', 'E', 'R', /* Add more keys here */];
+
+  // Loop through each key and call clearAudio function
+  keys.forEach(function(key) {
+      clearAudio(key);
+  });
+}
